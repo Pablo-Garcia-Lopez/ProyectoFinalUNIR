@@ -49,3 +49,11 @@ Añadirlas al archivo routes.py y añadir instrucciones a la sección "Hacer pru
 
 # PARA AÑADIR NUEVOS TESTS
 Añadirlos al archivo "test_data.py" o crear un fichero nuevo de ser necesario
+
+# PYTEST-COV
+Herramienta de asistencia para comprobar la cobertura del código en los tests.
+En este proyecto se exige que al menos el 80% del código esté cubierto en los tests.
+Con Pytest-cov (incluido en requirements-dev.txt) se puede comprobar el porcentaje de esto
+Si se quiere comprobar, se puede ejecutar el siguiente comando dentro de venv:
+pytest --cov=app (Para medir solo la aplicación)
+pytest --cov (para medir todo el código)
