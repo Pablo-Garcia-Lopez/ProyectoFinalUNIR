@@ -1,59 +1,181 @@
-# ProyectoFinalUNIR
+# Proyecto Final UNIR
 
-# COSAS QUE AÑADIR:
-- Que reajuste las id al borrar algún dato (si hay 4, al borrar el id 1 tendría que haber 1-2-3, no 2-3-4)
-- Que al borrar puedas pedirle que te muestre la lista de datos(?)
-- Meter más funcionalidades, como editar (posiblemente mediante id)
+Este proyecto es una aplicación web sencilla desarrollada con Flask, pensada como ejemplo para demostrar cómo crear un entorno local de desarrollo reproducible, con tests unitarios y una base de datos local.
 
-# PASOS PARA ARRANCAR LA APLICACIÓN
-- Crear el entorno virtual (en caso de que no lo tengas creado)
+El objetivo principal es que cualquier persona pueda:
+- Clonar el repositorio
+- Seguir unos pocos pasos
+- Ejecutar la aplicación en local
+- Ejecutar los tests y validar cambios sin miedo a romper nada
+
+---
+
+## Arquitectura del software
+
+El proyecto sigue una arquitectura simple y común en aplicaciones Flask pequeñas, basada en el patrón **Application Factory**.
+
+### Estructura del proyecto
+
+```
+ProyectoFinalUNIR/
+├── app/
+│   ├── __init__.py      # Creación de la aplicación Flask (create_app)
+│   ├── config.py        # Configuración de la aplicación
+│   ├── models.py        # Modelos de base de datos (SQLAlchemy)
+│   └── routes.py        # Endpoints / rutas de la API
+│
+├── tests/
+│   ├── conftest.py      # Fixtures de pytest (app y cliente de test)
+│   └── test_data.py     # Tests unitarios de los endpoints
+│
+├── manage.py            # Inicialización de la base de datos
+├── run.py               # Arranque de la aplicación en local
+├── requirements.txt     # Dependencias necesarias para la aplicación
+├── requirements-dev.txt # Dependencias de desarrollo y testing
+└── README.md
+```
+
+### Flujo de la aplicación
+
+1. `run.py` llama a `create_app()` para crear la aplicación Flask.
+2. Flask carga la configuración desde `config.py`.
+3. SQLAlchemy inicializa la base de datos usando los modelos definidos en `models.py`.
+4. Las rutas definidas en `routes.py` exponen los endpoints de la API.
+
+Este enfoque permite crear múltiples instancias de la aplicación (por ejemplo, para tests), sin depender de un servidor en ejecución.
+
+---
+
+## Requisitos previos
+
+- Python 3.9 o superior
+- Git
+
+No es necesario tener ninguna base de datos externa instalada.
+
+---
+
+## Entorno local de desarrollo
+
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/Pablo-Garcia-Lopez/ProyectoFinalUNIR.git
+cd ProyectoFinalUNIR
+```
+
+### 2. Crear y activar un entorno virtual
+
+```bash
 python -m venv venv
+```
 
-- Activar el entorno virtual en Windows
+En Windows:
+```bash
 venv\Scripts\activate
+```
 
-- Instalar los requisitos
-pip install -r requirements.txt
+En Linux / macOS:
+```bash
+source venv/bin/activate
+```
+
+### 3. Instalar dependencias
+
+Para desarrollo y tests:
+
+```bash
 pip install -r requirements-dev.txt
+```
 
-- Crear la base de datos y añadir el registro de ejemplo
+---
+
+## Ejecución de la aplicación en local
+
+### 1. Inicializar la base de datos
+
+```bash
 python manage.py
+```
 
-- Arrancar el servidor en http://0.0.0.0:5000
+Este paso crea la base de datos local y las tablas necesarias.
+
+### 2. Arrancar la aplicación
+
+```bash
 python run.py
+```
 
-# HACER PRUEBAS CON LA BASE DE DATOS MANUALMENTE
-- Meter datos
+La aplicación quedará disponible en:
+
+```
+http://127.0.0.1:5000
+```
+
+---
+
+## Probar funcionalidades
+
+Meter datos
+```bash
 Invoke-RestMethod `
  -Method Post `
  -Uri "http://127.0.0.1:5000/data" `
  -Body (@{name="Mi Nombre"} | ConvertTo-Json) `
  -ContentType "application/json"
+```
 
-- Consultar los datos
+Consultar los datos
+```bash
 Invoke-RestMethod `
 -Method Get `
 -Uri "http://127.0.0.1:5000/data"
+```
 
-- Eliminar datos
+Eliminar datos
+```bash
 Invoke-RestMethod `
 -Method Delete `
 -Uri "http://127.0.0.1:5000/data/1"
+```
 
-# CORRER LOS TESTS
-Sin necesidad de arrancar venv ni la aplicación, hacer:
-pytest -s tests/nombre_prueba.py (de momento solo está test_data.py)
+---
 
-# PARA AÑADIR NUEVAS FUNCIONALIDADES
-Añadirlas al archivo routes.py y añadir instrucciones a la sección "Hacer pruebas con la base de datos manualmente"
+## Ejecución de tests
 
-# PARA AÑADIR NUEVOS TESTS
-Añadirlos al archivo "test_data.py" o crear un fichero nuevo de ser necesario
+NOTA: Los tests no requieren que la aplicación esté arrancada.
 
-# PYTEST-COV
-Herramienta de asistencia para comprobar la cobertura del código en los tests.
-En este proyecto se exige que al menos el 80% del código esté cubierto en los tests.
-Con Pytest-cov (incluido en requirements-dev.txt) se puede comprobar el porcentaje de esto
-Si se quiere comprobar, se puede ejecutar el siguiente comando dentro de venv:
-pytest --cov=app (Para medir solo la aplicación)
-pytest --cov (para medir todo el código)
+Desde la raíz del proyecto:
+
+```bash
+pytest
+```
+
+Para ejecutar solo un fichero de tests:
+
+```bash
+pytest tests/test_data.py
+```
+
+---
+
+## Cobertura de código
+
+El proyecto utiliza `pytest-cov` para medir la cobertura de tests.
+
+Para obtener un informe de cobertura:
+
+```bash
+pytest --cov=app
+```
+
+---
+
+## Normas de colaboración
+
+- La rama `main` contiene siempre código estable.
+- El desarrollo de nuevas funcionalidades debe hacerse en ramas independientes:
+  - `feature/nombre-feature`
+  - `fix/nombre-fix`
+- Todo cambio debe ir acompañado de tests.
+- Los tests deben pasar antes de integrar los cambios en `main`.
