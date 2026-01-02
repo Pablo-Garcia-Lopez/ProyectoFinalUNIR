@@ -34,3 +34,24 @@ def delete_data(id):
     db.session.delete(element_to_delete)
     db.session.commit()
     return {"message": "Data deleted successfully"}
+
+
+@data_routes.route("/data/<int:data_id>", methods=["PUT"])
+def update_data(data_id):
+    data = Data.query.get(data_id)
+
+    if not data:
+        return jsonify({"error": "Data not found"}), 404
+
+    body = request.get_json()
+
+    if "name" in body:
+        data.name = body["name"]
+
+    db.session.commit()
+
+    return jsonify({
+        "id": data.id,
+        "name": data.name,
+        "message": "Data updated successfully"
+    })
