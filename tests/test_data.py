@@ -66,3 +66,41 @@ def test_delete_nonexistant(client):
     assert delete_response.status_code == 404
     print(delete_response.get_json())
     print("----------")
+
+def test_update_data(client):
+    print("test_update_data")
+
+    response = client.post(
+        "/data", 
+        json={"name": "Test"}
+        )
+    assert response.status_code == 200
+
+    response = client.get("/data")
+    data = response.get_json()
+    print(data)
+
+    data_id = data[0]["id"]
+    update_response = client.put(
+        f"/data/{data_id}",
+        json={"name": "Updated Test"}
+    )
+    assert update_response.status_code == 200
+    print(update_response.get_json())
+
+    response = client.get("/data")
+    data = response.get_json()
+    print(data)
+    assert data[0]["name"] == "Updated Test"
+    print("----------")
+
+def test_update_nonexistant(client):
+    print("test_update_nonexistant")
+
+    update_response = client.put(
+        f"/data/0",
+        json={"name": "Updated Test"}
+    )
+    assert update_response.status_code == 404
+    print(update_response.get_json())
+    print("----------")
