@@ -114,7 +114,13 @@ http://127.0.0.1:5000
 
 ---
 
-## Probar funcionalidades
+## Probar funcionalidades (con CLI)
+Una vez arrancada la aplicación, usar el comando
+```bash
+python user_app.py
+```
+
+## Probar funcionalidades (manualmente)
 
 Meter datos
 ```bash
@@ -137,6 +143,15 @@ Eliminar datos
 Invoke-RestMethod `
 -Method Delete `
 -Uri "http://127.0.0.1:5000/data/1"
+```
+
+Modificar datos
+```bash
+Invoke-RestMethod `
+-Method Put `
+-Uri "http://127.0.0.1:5000/data/1" `
+-Body (@{ name = "Nombre actualizado" } | ConvertTo-Json) `
+-ContentType "application/json"
 ```
 
 ---
