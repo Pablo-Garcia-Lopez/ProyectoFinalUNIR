@@ -12,11 +12,7 @@ from app import create_app, db
 @pytest.fixture
 def app():
     # Use the named config that exists in app/config.py
-    app = create_app("development")
-    app.config.update({
-        "TESTING": True,
-        "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"
-    })
+    app = create_app("testing")
 
     with app.app_context():
         db.create_all()
