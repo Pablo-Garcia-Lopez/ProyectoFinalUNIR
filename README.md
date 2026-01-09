@@ -2,36 +2,32 @@
 
 Este proyecto es una aplicación web sencilla desarrollada con Flask, pensada como ejemplo para demostrar cómo crear un entorno local de desarrollo reproducible, con tests unitarios y una base de datos local.
 
-El objetivo principal es que cualquier persona pueda:
-- Clonar el repositorio
-- Seguir unos pocos pasos
-- Ejecutar la aplicación en local
-- Ejecutar los tests y validar cambios sin miedo a romper nada
+Objetivos principales:
+- Clonar el repositorio y arrancar la app localmente
+- Ejecutar tests y comprobar cobertura
+- Entender cómo configurar la base de datos en diferentes entornos
 
 ---
 
-## Arquitectura del software
-
-El proyecto sigue una arquitectura simple y común en aplicaciones Flask pequeñas, basada en el patrón **Application Factory**.
-
-### Estructura del proyecto
+## Estructura del proyecto
 
 ```
 ProyectoFinalUNIR/
 ├── app/
 │   ├── __init__.py      # Creación de la aplicación Flask (create_app)
-│   ├── config.py        # Configuración de la aplicación
+│   ├── config.py        # Configuración por entornos (dev/testing/prod)
 │   ├── models.py        # Modelos de base de datos (SQLAlchemy)
 │   └── routes.py        # Endpoints / rutas de la API
 │
 ├── tests/
 │   ├── conftest.py      # Fixtures de pytest (app y cliente de test)
-│   └── test_data.py     # Tests unitarios de los endpoints
+│   └── test_data.py     # Tests de los endpoints
 │
-├── manage.py            # Inicialización de la base de datos
+├── manage.py            # Inicialización de la base de datos (dev)
 ├── run.py               # Arranque de la aplicación en local
-├── requirements.txt     # Dependencias necesarias para la aplicación
-├── requirements-dev.txt # Dependencias de desarrollo y testing
+├── user_app.py          # Cliente CLI para probar la API
+├── requirements.txt     # Dependencias de la aplicación
+├── requirements-dev.txt # Dependencias para desarrollo y testing
 └── README.md
 ```
 
@@ -67,12 +63,17 @@ cd ProyectoFinalUNIR
 ### 2. Crear y activar un entorno virtual
 
 ```bash
-python -m venv venv
+python -m venv .venv
 ```
 
 En Windows:
+Si te da problemas para inicializar el venv, usa:
 ```bash
-venv\Scripts\activate
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+```
+Para permitir en ese terminal la activación del entorno virtual. Luego usa:
+```bash
+.venv\Scripts\activate
 ```
 
 En Linux / macOS:
@@ -90,7 +91,11 @@ pip install -r requirements-dev.txt
 
 ---
 
-## Ejecución de la aplicación en local
+## Variables de entorno / Configuración
+
+- En desarrollo la app usa por defecto SQLite (`sqlite:///data.db`).
+- Para producción la aplicación espera que `DATABASE_URI` esté definida y apunte a una base de datos adecuada
+
 
 ### 1. Inicializar la base de datos
 
@@ -98,7 +103,9 @@ pip install -r requirements-dev.txt
 python manage.py
 ```
 
-Este paso crea la base de datos local y las tablas necesarias.
+Esto creará la base de datos local (por defecto `data.db`) y añadirá un registro de ejemplo.
+
+---
 
 ### 2. Arrancar la aplicación
 
@@ -114,15 +121,16 @@ http://127.0.0.1:5000
 
 ---
 
-## Probar funcionalidades (con CLI)
-Una vez arrancada la aplicación, usar el comando
+## Probar funcionalidades
+
+- Con CLI (cliente incluido):
 ```bash
 python user_app.py
 ```
 
 ## Probar funcionalidades (manualmente)
 
-Meter datos
+POST (añadir):
 ```bash
 Invoke-RestMethod `
  -Method Post `
@@ -131,21 +139,21 @@ Invoke-RestMethod `
  -ContentType "application/json"
 ```
 
-Consultar los datos
+GET (listar):
 ```bash
 Invoke-RestMethod `
 -Method Get `
 -Uri "http://127.0.0.1:5000/data"
 ```
 
-Eliminar datos
+DELETE (borrar por id):
 ```bash
 Invoke-RestMethod `
 -Method Delete `
 -Uri "http://127.0.0.1:5000/data/1"
 ```
 
-Modificar datos
+PUT (modificar datos por id)
 ```bash
 Invoke-RestMethod `
 -Method Put `
@@ -160,13 +168,13 @@ Invoke-RestMethod `
 
 NOTA: Los tests no requieren que la aplicación esté arrancada.
 
-Desde la raíz del proyecto:
+Activar el venv y ejecutar:
 
 ```bash
-pytest
+pytest (o pytest -s para ver los prints)
 ```
 
-Para ejecutar solo un fichero de tests:
+Para ejecutar un fichero concreto:
 
 ```bash
 pytest tests/test_data.py
@@ -186,11 +194,10 @@ pytest --cov=app
 
 ---
 
-## Normas de colaboración
+## Colaboración
 
-- La rama `main` contiene siempre código estable.
-- El desarrollo de nuevas funcionalidades debe hacerse en ramas independientes:
+- La rama `main` contiene el código estable.
+- Desarrolla nuevas funcionalidades en ramas tipo:
   - `feature/nombre-feature`
   - `fix/nombre-fix`
-- Todo cambio debe ir acompañado de tests.
-- Los tests deben pasar antes de integrar los cambios en `main`.
+- Acompaña los cambios con tests. Los tests deben pasar antes de integrar en `main`.
