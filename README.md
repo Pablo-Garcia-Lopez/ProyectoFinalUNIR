@@ -38,8 +38,6 @@ ProyectoFinalUNIR/
 3. SQLAlchemy inicializa la base de datos usando los modelos definidos en `models.py`.
 4. Las rutas definidas en `routes.py` exponen los endpoints de la API.
 
-Este enfoque permite crear múltiples instancias de la aplicación (por ejemplo, para tests), sin depender de un servidor en ejecución.
-
 ---
 
 ## Requisitos previos
